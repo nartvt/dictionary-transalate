@@ -1,0 +1,28 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+#  config:
+#    location: classpath:resources
+#    name: application
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-ui
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password=: password
+
+oxford:
+  urlTranslate: "https://od-api.oxforddictionaries.com/api/v2/translations/{source_lang_translate}/{target_lang_translate}/{word_id}"
+
+timeout-connection-url: 5000

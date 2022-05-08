@@ -1,26 +1,31 @@
 package com.program.dictionary.utils;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.function.Consumer;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.program.dictionary.config.Config;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+
+import java.io.Serializable;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 
 /**
  * The Class RestUtils.
  */
-@Service
+@Component
 public final class RestUtils implements Serializable {
 
     /** The Constant serialVersionUID. */
@@ -28,8 +33,19 @@ public final class RestUtils implements Serializable {
 
     private static WebClient webClient;
 
-    private RestUtils() {
-        webClient = WebClient.builder().build();
+    private static HttpClient httpClient;
+
+
+    private Config config = new Config();
+
+private RestUtils() {
+    httpClient = HttpClient.create()
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getTimeoutConnectionUrl())
+            .responseTimeout(Duration.ofMillis(config.getTimeoutConnectionUrl()))
+            .doOnConnected(conn ->
+                    conn.addHandlerLast(new ReadTimeoutHandler(config.getTimeoutConnectionUrl(), TimeUnit.MILLISECONDS))
+                            .addHandlerLast(new WriteTimeoutHandler(config.getTimeoutConnectionUrl(), TimeUnit.MILLISECONDS)));
+        webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).build();
     }
 
     /**
@@ -43,11 +59,29 @@ public final class RestUtils implements Serializable {
      * @param responseClass the response class
      * @return the response entity
      */
-    private static <T>Mono<T> callRest(final String url, final HttpMethod method, final T body,
+    private static <T>Mono<T> doRequest(final String url, final HttpMethod method, final T body,
                  final Consumer<HttpHeaders> headersConsumer, final ParameterizedTypeReference<T> responseClass) {
         return webClient.method(method).uri(url).headers(headersConsumer).retrieve().bodyToMono(responseClass);
     }
+    public static <T> Mono<T> get(final String url, final Consumer headers,
+                                            final ParameterizedTypeReference<T> responseClass) {
+        return doRequest(url, HttpMethod.GET, null, headers, responseClass);
+    }
 
+    /**
+     * Post.
+     *
+     * @param <T>           the generic type
+     * @param url           the url
+     * @param headers       the headers
+     * @param body          the body
+     * @param responseClass the response class
+     * @return the response entity
+     */
+    public static <T> Mono<T> post(final String url, final Consumer<HttpHeaders> headers, final T body,
+                                             final ParameterizedTypeReference<T> responseClass) {
+        return doRequest(url, HttpMethod.POST, body, headers, responseClass);
+    }
     /**
      * Adds the request body.
      *
@@ -64,12 +98,19 @@ public final class RestUtils implements Serializable {
     }
 
 
-    public static HttpHeaders httpHeadersApplicationJSON() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.set(HttpHeaders.CACHE_CONTROL, "no-cache");
-        headers.set(HttpHeaders.CACHE_CONTROL, "no-cache");
+    public static Consumer<HttpHeaders> httpHeaders(Map<String,String>headerMaps) {
+        return new Consumer<HttpHeaders>() {
+            @Override
+            public void accept(HttpHeaders httpHeaders) {
+                httpHeaders.addAll( getHeader(headerMaps));
+            }
+        };
+    }
+    private static HttpHeaders getHeader(Map<String,String>headerMaps) {
+        HttpHeaders headers = new HttpHeaders();
+        for (Map.Entry<String,String> header : headerMaps.entrySet()) {
+            headers.set(header.getKey(), header.getValue());
+        }
         return headers;
     }
-
 }

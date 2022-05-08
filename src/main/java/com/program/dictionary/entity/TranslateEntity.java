@@ -3,11 +3,11 @@ package com.program.dictionary.entity;
 import lombok.Data;
 
 import java.util.List;
+
 @Data
-public class WordEntity {
+public class TranslateEntity {
     private String id;
-    private String language;
-    private List<LexicalEntryEntity> lexicalEntries;
-    private String type;
+    private MetadataEntity metadata;
+    private List<WordEntity> results;
     private String word;
 }
