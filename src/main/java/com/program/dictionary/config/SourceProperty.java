@@ -9,9 +9,8 @@ import org.springframework.core.io.support.PropertySourceFactory;
 import java.io.IOException;
 import java.util.Properties;
 
+
 public class SourceProperty implements PropertySourceFactory {
-
-
 
     @Override
     public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {

@@ -1,9 +1,9 @@
-package com.program.dictionary.entity;
+package com.program.dictionary.handler.response.model;
 
 import lombok.Data;
 
 @Data
-public class MetadataEntity {
+public class Metadata {
     private String operation;
     private String provider;
     private String schema;

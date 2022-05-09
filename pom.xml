@@ -15,6 +15,7 @@
     <description>dictionary-transalate</description>
     <properties>
         <java.version>11</java.version>
+        <spring.framework.version>5.3.19</spring.framework.version>
     </properties>
     <dependencies>
         <dependency>
@@ -35,6 +36,10 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
@@ -44,18 +49,24 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-configuration-processor</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>spring-milestone</id>
+            <name>Spring Maven MILESTONE Repository</name>
+            <url>https://repo.spring.io/libs-milestone</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -63,16 +74,5 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-<!--        <resources>-->
-<!--        <resource>-->
-<!--            <directory>src/main/resources</directory>-->
-<!--            <filtering>true</filtering>-->
-<!--            <includes>-->
-<!--                <include>**/*.properties</include>-->
-<!--                <include>**/*.yml</include>-->
-<!--            </includes>-->
-<!--        </resource>-->
-<!--        </resources>-->
     </build>
-
 </project>

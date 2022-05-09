@@ -1,4 +1,4 @@
-package com.program.dictionary.handler.response.view;
+package com.program.dictionary.handler.response.dto;
 
 import lombok.Data;
 

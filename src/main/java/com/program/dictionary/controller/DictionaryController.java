@@ -1,12 +1,12 @@
 package com.program.dictionary.controller;
 
 import com.program.dictionary.config.Config;
-import com.program.dictionary.entity.TranslateEntity;
 import com.program.dictionary.handler.request.Request;
 import com.program.dictionary.handler.request.WordRequest;
 import com.program.dictionary.handler.response.Pagination;
 import com.program.dictionary.handler.response.Response;
-import com.program.dictionary.handler.response.model.WordDTO;
+import com.program.dictionary.handler.response.model.Translate;
+import com.program.dictionary.handler.response.dto.WordDTO;
 import com.program.dictionary.handler.response.view.WordView;
 import com.program.dictionary.service.DictionaryService;
 import com.program.dictionary.service.IDictionaryService;
@@ -23,21 +23,17 @@ import java.io.IOException;
 @RequestMapping("api")
 public class DictionaryController {
 
+    private Config config ;
 
-    private Config config;
 
     private IDictionaryService iDictionaryService;
 
-    private WordView wordView;
-
-
-    public DictionaryController(){
-        config = new Config();
-        iDictionaryService = new DictionaryService();
-        wordView = new WordView();
+    public DictionaryController(Config config, DictionaryService iDictionaryService){
+        this.config = config;
+        this.iDictionaryService = iDictionaryService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public void handler(HttpServletResponse response) throws IOException {
         response.sendRedirect("/ping");
     }
@@ -56,6 +52,7 @@ public class DictionaryController {
                                            ){
         WordRequest request;
         Response response = new Response();
+        WordView wordView = new WordView();
         try {
              request = Request.bind(sourceLangTranslate, targetLangTranslate, wordId, limit, offset);
         }catch (NullPointerException e){
@@ -64,7 +61,7 @@ public class DictionaryController {
         }
 
         try{
-            final TranslateEntity translateEntity = iDictionaryService.GetTranslate(request).block();
+            final Translate translateEntity = iDictionaryService.GetTranslate(request).block();
 
             if(translateEntity.getResults().isEmpty()){
                 return new ResponseEntity<>(Mono.just(new Response()), HttpStatus.NOT_FOUND);

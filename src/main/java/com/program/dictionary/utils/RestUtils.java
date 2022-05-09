@@ -63,7 +63,7 @@ private RestUtils() {
                  final Consumer<HttpHeaders> headersConsumer, final ParameterizedTypeReference<T> responseClass) {
         return webClient.method(method).uri(url).headers(headersConsumer).retrieve().bodyToMono(responseClass);
     }
-    public static <T> Mono<T> get(final String url, final Consumer headers,
+    public static <T> Mono<T> get(final String url, final Consumer<HttpHeaders> headers,
                                             final ParameterizedTypeReference<T> responseClass) {
         return doRequest(url, HttpMethod.GET, null, headers, responseClass);
     }
@@ -90,7 +90,8 @@ private RestUtils() {
      * @param headers the headers
      * @return the http entity
      */
-    private static <T> HttpEntity<T> addRequestBody(final T body, final HttpHeaders headers) {
+    @SuppressWarnings("unused")
+	private static <T> HttpEntity<T> addRequestBody(final T body, final HttpHeaders headers) {
         if (Objects.nonNull(body)) {
             return new HttpEntity<>(body, headers);
         }

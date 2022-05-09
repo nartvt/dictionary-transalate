@@ -1,11 +1,10 @@
 package com.program.dictionary.service;
 
 import com.program.dictionary.config.Config;
-import com.program.dictionary.entity.TranslateEntity;
 import com.program.dictionary.handler.request.WordRequest;
+import com.program.dictionary.handler.response.model.Translate;
 import com.program.dictionary.utils.RestUtils;
 import com.program.dictionary.utils.Utils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,11 +19,13 @@ import java.util.function.Consumer;
 @Service
 public class DictionaryService implements IDictionaryService{
 
-
-    @Autowired
     private Config config;
 
-    public Mono<TranslateEntity> GetTranslate(WordRequest request) throws NullPointerException{
+    public DictionaryService(Config config){
+        this.config = config;
+    }
+
+    public Mono<Translate> GetTranslate(WordRequest request) throws NullPointerException{
         if(request.getSourceLang() == null || request.getTargetLang() == null || request.getWordId() == null){
             throw  new NullPointerException("Input data is null");
         }
@@ -49,9 +50,9 @@ public class DictionaryService implements IDictionaryService{
         final Map<String,String> headers = new HashMap<String,String>(1);
         headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         final Consumer<HttpHeaders> httpHeadersConsumer = RestUtils.httpHeaders(headers);
-        final ParameterizedTypeReference<TranslateEntity> wordEntityResponse = new ParameterizedTypeReference<TranslateEntity>() {};
+        final ParameterizedTypeReference<Translate> wordEntityResponse = new ParameterizedTypeReference<Translate>() {};
 
-        final Mono<TranslateEntity> wordEntityMonoResponse = RestUtils.get(urlTranslate,httpHeadersConsumer,wordEntityResponse);
+        final Mono<Translate> wordEntityMonoResponse = RestUtils.get(urlTranslate,httpHeadersConsumer,wordEntityResponse);
         wordEntityMonoResponse.subscribe();
         return wordEntityMonoResponse;
     }

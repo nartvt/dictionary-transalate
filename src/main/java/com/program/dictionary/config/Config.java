@@ -30,7 +30,4 @@ public class Config {
         return timeoutConnectionUrl;
     }
 
-    public void setTimeoutConnectionUrl(int timeoutConnectionUrl) {
-        this.timeoutConnectionUrl = timeoutConnectionUrl;
-    }
 }

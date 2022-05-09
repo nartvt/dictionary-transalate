@@ -1,17 +1,17 @@
 package com.program.dictionary.handler.response.view;
 
-import com.program.dictionary.entity.LexicalEntryEntity;
-import com.program.dictionary.entity.TranslateEntity;
-import com.program.dictionary.entity.WordEntity;
-import com.program.dictionary.handler.response.model.LexicalEntryDTO;
-import com.program.dictionary.handler.response.model.WordDTO;
+import com.program.dictionary.handler.response.dto.LexicalEntryDTO;
+import com.program.dictionary.handler.response.dto.WordDTO;
+import com.program.dictionary.handler.response.model.LexicalEntry;
+import com.program.dictionary.handler.response.model.Translate;
+import com.program.dictionary.handler.response.model.Word;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WordView {
 
-    public WordDTO newResponse(TranslateEntity entity){
+    public WordDTO newResponse(Translate entity){
         if (entity == null || entity.getResults().isEmpty()){
             return new WordDTO();
         }
@@ -21,7 +21,7 @@ public class WordView {
         wordDTO.setLang(lang);
 
         final List<LexicalEntryDTO> lexicalCategoryDTOS = new ArrayList<>();
-        for (WordEntity wordEntity:entity.getResults()){
+        for (Word wordEntity:entity.getResults()){
             wordEntity.getLexicalEntries().forEach(lexicalEntry-> {
                 LexicalEntryDTO lexicalEntryDTO = newLexicalCategory(lexicalEntry);
                 lexicalCategoryDTOS.add(lexicalEntryDTO);
@@ -30,7 +30,7 @@ public class WordView {
         return wordDTO;
     }
 
-    private LexicalEntryDTO newLexicalCategory(LexicalEntryEntity lexicalEntryEntity){
+    private LexicalEntryDTO newLexicalCategory(LexicalEntry lexicalEntryEntity){
         if(lexicalEntryEntity==null || lexicalEntryEntity.getLexicalCategory() == null){
             return null;
         }

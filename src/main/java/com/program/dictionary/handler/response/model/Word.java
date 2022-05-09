@@ -1,13 +1,13 @@
-package com.program.dictionary.entity;
+package com.program.dictionary.handler.response.model;
 
 import lombok.Data;
 
 import java.util.List;
 @Data
-public class WordEntity {
+public class Word {
     private String id;
     private String language;
-    private List<LexicalEntryEntity> lexicalEntries;
+    private List<LexicalEntry> lexicalEntries;
     private String type;
     private String word;
 }

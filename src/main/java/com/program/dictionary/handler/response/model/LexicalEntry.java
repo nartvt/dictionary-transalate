@@ -1,10 +1,10 @@
-package com.program.dictionary.entity;
+package com.program.dictionary.handler.response.model;
 
 import lombok.Data;
 
 @Data
-public class LexicalEntryEntity {
+public class LexicalEntry {
     private String language;
-    private LexicalCategoryEntity lexicalCategory;
+    private LexicalCategory lexicalCategory;
     private String text;
 }
