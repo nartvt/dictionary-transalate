@@ -1,4 +1,4 @@
-package com.program.dictionary.handler.response.model;
+package com.program.dictionary.handler.response.view;
 
 import lombok.Data;
 
